@@ -12,4 +12,9 @@ public class CourseServiceStub implements CourseService {
         return Arrays.asList("Spring", "Spring Boot", "Spring MVC");
     }
 
+    @Override
+    public void deleteCourse(String course) {
+
+    }
+
 }
