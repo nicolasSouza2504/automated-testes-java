@@ -1,41 +1,38 @@
 package br.com.tdd;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.hamcrest.Matchers.*;
 
+@ExtendWith(MockitoExtension.class)
 public class CourseBussinessMockTest {
 
+    @Mock
     CourseService courseMockService;
+
+    @InjectMocks
     CourseBusiness courseBusiness;
+
     List<String> courses = Arrays.asList("Spring", "Spring Boot", "Spring MVC", "Quarkus", "Node");
-
-    @BeforeEach
-    void setup() {
-
-        courseMockService = mock(CourseService.class);
-
-        when(courseMockService.retrieveCourses("Dummy")).thenReturn(courses);
-        when(courseMockService.retrieveCourses(null)).thenReturn(null);
-
-        courseBusiness = new CourseBusiness(courseMockService);
-
-    }
 
     @Test
     public void testRetrieveCoursesToStudent_WhenFilterSpring_ShouldReturnOnlySpringCourses() {
 
         // Given
+        when(courseMockService.retrieveCourses("Dummy")).thenReturn(courses);
 
         // When
         List<String> filteredCourses = courseBusiness.retrieveCourses("Dummy");
@@ -67,6 +64,7 @@ public class CourseBussinessMockTest {
     public void testDeleteCoursesNotRelatedToSpring_UsingMockitoVerify_ShouldCallDeleteMethod() {
 
         // Given
+        when(courseMockService.retrieveCourses("Dummy")).thenReturn(courses);
 
         // When
         courseBusiness.deleteCoursesNotRelatedToSpring("Dummy");
@@ -92,7 +90,6 @@ public class CourseBussinessMockTest {
         courseBusiness.deleteCoursesNotRelatedToSpring("Dummy");
 
         // Then
-
         ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
         verify(courseMockService, times(2)).deleteCourse(argumentCaptor.capture());
