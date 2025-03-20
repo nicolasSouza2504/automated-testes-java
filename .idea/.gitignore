@@ -1,0 +1,18 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+automated-tests-with-java.iml
+compiler.xml
+encodings.xml
+jarRepositories.xml
+jvm.config
+maven.config
+misc.xml
+modules.xml
+vcs.xml
+uiDesigner.xml
