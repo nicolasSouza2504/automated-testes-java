@@ -1,6 +1,7 @@
 package br.com.erudio.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,37 +15,44 @@ import br.com.erudio.repositories.PersonRepository;
 public class PersonServices {
 	
 	private Logger logger = Logger.getLogger(PersonServices.class.getName());
-	
+
 	@Autowired
-	PersonRepository repository;
+	PersonRepository personRepository;
 
 	public List<Person> findAll() {
 
 		logger.info("Finding all people!");
 
-		return repository.findAll();
+		return personRepository.findAll();
 	}
 
 	public Person findById(Long id) {
 		
 		logger.info("Finding one person!");
 		
-		return repository.findById(id)
+		return personRepository.findById(id)
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 	}
 	
 	public Person create(Person person) {
 
 		logger.info("Creating one person!");
-		
-		return repository.save(person);
+
+		Optional<Person> personAlreadySaved = personRepository.findByEmail(person.getEmail());
+
+		personAlreadySaved.ifPresent((persons) -> {
+			throw new RuntimeException("User Already exists");
+        });
+
+		return personRepository.save(person);
+
 	}
 	
 	public Person update(Person person) {
 		
 		logger.info("Updating one person!");
 		
-		var entity = repository.findById(person.getId())
+		var entity = personRepository.findById(person.getId())
 			.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
 
 		entity.setFirstName(person.getFirstName());
@@ -52,15 +60,18 @@ public class PersonServices {
 		entity.setAddress(person.getAddress());
 		entity.setGender(person.getGender());
 		
-		return repository.save(person);
+		return personRepository.save(person);
 	}
 	
 	public void delete(Long id) {
 		
 		logger.info("Deleting one person!");
 		
-		var entity = repository.findById(id)
+		var entity = personRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
-		repository.delete(entity);
+
+		personRepository.delete(entity);
+
 	}
+
 }
